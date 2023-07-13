@@ -26,25 +26,6 @@ class Attention(nn.Module):
         return Z
 
 
-def test_forward_Attention():
-    attention = Attention(word_size=512, embed_dim=64)
-
-    # Tạo các embedding của 3 từ
-    word1 = torch.randn(1, 512)  # Embedding của từ thứ nhất
-    word2 = torch.randn(1, 512)  # Embedding của từ thứ hai
-    word3 = torch.randn(1, 512)  # Embedding của từ thứ ba
-
-    # Gộp các embedding thành một tensor đầu vào
-    input_tensor = torch.cat([word1, word2, word3], dim=0)
-
-    # Forward pass để tính toán đầu ra
-    output = attention(input_tensor)
-
-    # In ra kết quả đầu ra
-    print(output)
-    print(output.shape) #torch.Size([3, 64])
-
-
 class MultiheadAttention(nn.Module):
     def __init__(self, word_size: int = 512, embed_dim: int = 64, n_head:int=8) -> None:
         super().__init__()
