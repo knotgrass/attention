@@ -97,22 +97,3 @@ class  GroupedQueryAttention(Attention):
         Z_s = torch.cat([head(x) for head in self.grouped], dim=1)
         Z = torch.matmul(Z_s, self.proj)
         return Z
-
-
-def test_forward_GroupedQueryAttention():
-    word_size =512
-    device = torch.device('cuda', 0)
-    mqa = GroupedQueryAttention(word_size=word_size, embed_dim=64,
-                                n_grouped=4, n_query_each_group=2).to(device=device)
-
-    # Tạo các embedding của 3 từ
-    word1 = torch.randn(1, word_size)  # Embedding của từ thứ nhất
-    word2 = torch.randn(1, word_size)  # Embedding của từ thứ hai
-    word3 = torch.randn(1, word_size)  # Embedding của từ thứ ba
-        # Gộp các embedding thành một tensor đầu vào
-    input_tensor = torch.cat([word1, word2, word3], dim=0).to(device=device)
-    output = mqa(input_tensor)
-    print(output)
-    print(output.shape)
-    
-test_forward_GroupedQueryAttention()
