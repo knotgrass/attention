@@ -5,7 +5,9 @@ This repository implements several types of attention modules in PyTorch, includ
 * Multi-Query Attention: A multi-query attention module that allows multiple queries and only one key, value to attend to the same input sequence.
 * Grouped-Query Attention: A grouped query attention module that allows queries to be grouped together (each group include multiple queries and only one key) and attended to jointly.
 
-![attention](images/grouped-query-attention.png)
+<p align="center">
+  <img src="images/grouped-query-attention.png" />
+</p>
 
 `multi-query attention` and `grouped-query attention` modules is an alternative to `multi-head attention` with much lower memory bandwidth requirements. They has been used in many models, the most famous of which are:
 * multi-query attention: [PaLM](https://arxiv.org/abs/2204.02311v5), [AlphaDev](https://www.nature.com/articles/s41586-023-06004-9), [AlphaZero](https://arxiv.org/pdf/1712.01815v1.pdf)
