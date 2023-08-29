@@ -12,20 +12,31 @@ del join, realpath, root
 def test_forward_Attention():
     attention = Attention(word_size=512, embed_dim=64)
 
-    # Tạo các embedding của 3 từ
-    word1 = torch.randn(1, 512)  # Embedding của từ thứ nhất
-    word2 = torch.randn(1, 512)  # Embedding của từ thứ hai
-    word3 = torch.randn(1, 512)  # Embedding của từ thứ ba
+    # Create embedding of 3 word
+    word1 = torch.randn(1, 512)  # Embedding of 1st word
+    word2 = torch.randn(1, 512)  # Embedding of 2nd word
+    word3 = torch.randn(1, 512)  # Embedding of 3rt word
 
-    # Gộp các embedding thành một tensor đầu vào
+    # Concat embeddings into one input tensor
     input_tensor = torch.cat([word1, word2, word3], dim=0)
 
-    # Forward pass để tính toán đầu ra
+    # Forward pass to caculate output
     output = attention(input_tensor)
 
-    # In ra kết quả đầu ra
-    print(output)
-    print(output.shape) #torch.Size([3, 64])
+    query = attention.query(input_tensor)
+    key = attention.key(input_tensor)
+    value = attention.value(input_tensor)
+
+    out2 = torch.nn.functional.scaled_dot_product_attention(
+        query, key, value)
+
+    sub = out2 - output
+    print(sub)
+    print(sub.shape)
+    assert not sub.round(decimals=6).sum()
+
+    # print(output)
+    # print(output.shape) #torch.Size([3, 64])
 
 
 def _test_forward_MultilHeadAttention(word_size=512, embed_dim=64, n_head=8,
@@ -102,9 +113,9 @@ def test_forward_GroupedQueryAttention():
 
 def test_all():
     test_forward_Attention()
-    test_forward_MultilHeadAttention(n_test=10)
-    test_forward_MultiQueryAttention()
-    test_forward_GroupedQueryAttention()
+    # test_forward_MultilHeadAttention(n_test=10)
+    # test_forward_MultiQueryAttention()
+    # test_forward_GroupedQueryAttention()
 
 if __name__ == '__main__':
     test_all()
