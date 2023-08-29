@@ -1,5 +1,6 @@
 import torch
 from torch import nn, Tensor
+import torch.nn.functional as F
 
 
 class Attention(nn.Module):
@@ -11,9 +12,27 @@ class Attention(nn.Module):
         self.key  = nn.Linear(in_features=word_size, out_features=embed_dim, bias=True)
         self.value = nn.Linear(in_features=word_size, out_features=embed_dim, bias=True)
 
-    def self_attention(self, Q:Tensor, K:Tensor, V:Tensor) -> Tensor:
+    def self_attention(self, Q: Tensor, K: Tensor, V: Tensor) -> Tensor:
+        """
+        Perform self-attention on the input tensors.
+
+        This is a simple implementation of self-attention that uses the dot product attention mechanism.
+        If you are looking for attention with better performance, please try:
+
+        * `F.scaled_dot_product_attention`
+        * [Flash Attention](https://github.com/Dao-AILab/flash-attention)
+
+        Args:
+            Q: The query tensor.
+            K: The key tensor.
+            V: The value tensor.
+
+        Returns:
+            The output tensor of the self-attention layer.
+        """
+
         K_T = torch.transpose(K, 0, 1)
-        score = torch.matmul(Q, K_T)  / torch.sqrt(self.dim_K)
+        score = torch.matmul(Q, K_T) / torch.sqrt(self.dim_K)
         score = torch.softmax(score, dim=-1)
         Z = torch.matmul(score, V)
         return Z
@@ -23,6 +42,7 @@ class Attention(nn.Module):
         K = self.key(x)
         V = self.value(x)
         Z = self.self_attention(Q, K, V)
+        # Z = F.scaled_dot_product_attention(Q, K, V)
         return Z
 
 
