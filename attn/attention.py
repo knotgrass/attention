@@ -32,7 +32,8 @@ class Attention(nn.Module):
         """
 
         K_T = torch.transpose(K, 0, 1)
-        score = torch.matmul(Q, K_T) / torch.sqrt(self.dim_K)
+        score = torch.matmul(Q, K_T)
+        score /= torch.sqrt(self.dim_K)
         score = torch.softmax(score, dim=-1)
         Z = torch.matmul(score, V)
         return Z

@@ -5,7 +5,7 @@ from sys import path
 root = realpath(join(__file__, '..', '..'))
 path.append(root)
 print(root)
-from attn.attention import Attention, MultiheadAttention, MultiQueryAttention, GroupedQueryAttention
+from attn import Attention, MultiheadAttention, MultiQueryAttention, GroupedQueryAttention
 del join, realpath, root
 
 
