@@ -43,6 +43,7 @@ class LinearSelfAttention(Attention):
 
 class Projection(nn.Module):
     def __init__(self, n:int, k:int) -> None:
+        super().__init__()
         self.k = k
         self.n = n # sequence length
         self.proj = nn.Linear(in_features=n, out_features=k)
