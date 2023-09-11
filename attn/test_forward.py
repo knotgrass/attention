@@ -127,9 +127,9 @@ def check_state_dict_of_multi_attn():
 
 def test_all():
     test_forward_Attention()
-    # test_forward_MultilHeadAttention(n_test=10)
-    # test_forward_MultiQueryAttention()
-    # test_forward_GroupedQueryAttention()
+    test_forward_MultilHeadAttention(n_test=10)
+    test_forward_MultiQueryAttention()
+    test_forward_GroupedQueryAttention()
     check_state_dict_of_multi_attn()
 
 
