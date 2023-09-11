@@ -56,15 +56,15 @@ class MultiheadAttention(nn.Module):
         self.n_head = n_head
         self.embed_dim = embed_dim
         self.dim_K = torch.tensor(embed_dim)
-        self.proj = nn.Parameter(torch.empty(embed_dim * n_head, embed_dim))
-        nn.init.xavier_uniform_(self.proj)
+        self.proj = nn.Linear(in_features=embed_dim * n_head,
+                             out_features=embed_dim, bias=False)
         self.multihead = nn.ModuleList([
             Attention(word_size, embed_dim) for _ in range(n_head)
         ])
 
     def forward(self, x: Tensor) -> Tensor:
         Z_s = torch.cat([head(x) for head in self.multihead], dim=1)
-        Z = torch.matmul(Z_s, self.proj)
+        Z = self.proj(Z_s)
         return Z
 
 
@@ -75,8 +75,8 @@ class  MultiQueryAttention(Attention):
     def __init__(self, word_size: int = 512, embed_dim: int = 64, n_query:int=8) -> None:
         super().__init__(word_size, embed_dim)
         self.n_query = n_query
-        self.proj = nn.Parameter(torch.empty(embed_dim * n_query, embed_dim))
-        nn.init.xavier_normal_(self.proj)
+        self.proj = nn.Linear(in_features=embed_dim * n_query,
+                              out_features=embed_dim, bias=False)
         delattr(self, 'query')
         self.querys = nn.ModuleList([
             nn.Linear(in_features=word_size, out_features=embed_dim, bias=True)
@@ -91,7 +91,7 @@ class  MultiQueryAttention(Attention):
         Z_s = torch.cat([
             self.self_attention(query(x), K, V) for query in self.querys
         ], dim=1)
-        Z = torch.matmul(Z_s, self.proj)
+        Z = self.proj(Z_s)
         return Z
 
 
@@ -110,11 +110,10 @@ class  GroupedQueryAttention(Attention):
             MultiQueryAttention(word_size, embed_dim, n_query=n_query_each_group)
             for _ in range(n_grouped)
         ])
-        # self.proj = nn.Parameter(torch.empty((..., ...), requires_grad=True))
-        self.proj = nn.Parameter(torch.empty(embed_dim * n_grouped, embed_dim))
-        nn.init.xavier_uniform_(self.proj)
+        self.proj = nn.Linear(in_features=embed_dim * n_grouped,
+                              out_features=embed_dim, bias=False)
 
     def forward(self, x: Tensor) -> Tensor:
         Z_s = torch.cat([head(x) for head in self.grouped], dim=1)
-        Z = torch.matmul(Z_s, self.proj)
+        Z = self.proj(Z_s)
         return Z

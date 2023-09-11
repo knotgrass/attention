@@ -36,7 +36,7 @@ def test_forward_Attention():
     assert not sub.round(decimals=6).sum()
 
     # print(output)
-    # print(output.shape) #torch.Size([3, 64])
+    print(output.shape) #torch.Size([3, 64])
 
 
 def _test_forward_MultilHeadAttention(word_size=512, embed_dim=64, n_head=8,
@@ -59,7 +59,7 @@ def _test_forward_MultilHeadAttention(word_size=512, embed_dim=64, n_head=8,
 
     # In ra kết quả đầu ra
     # print(output)
-    # print(output.shape) #torch.Size([3, 64])
+    print(output.shape) #torch.Size([3, 64])
 
 def test_forward_MultilHeadAttention(n_test:int=10):
     from random import randint, choice, seed
@@ -111,11 +111,27 @@ def test_forward_GroupedQueryAttention():
     print(output.shape)
 
 
+def check_state_dict_of_multi_attn():
+    from random import randint
+    n = randint(2, 32)
+    n1 = randint(2, 32)
+    mha = MultiheadAttention(n_head=n).state_dict().keys()
+    mqa = MultiQueryAttention(n_query=n).state_dict().keys()
+    gqa = GroupedQueryAttention(
+        n_grouped=n, n_query_each_group=n1).state_dict().keys()
+
+    assert len([name for name in mha if 'proj' in name]) == 1
+    assert len([name for name in mqa if 'proj' in name]) == 1
+    assert len([name for name in gqa if 'proj' in name]) == n + 1
+
+
 def test_all():
     test_forward_Attention()
     # test_forward_MultilHeadAttention(n_test=10)
     # test_forward_MultiQueryAttention()
     # test_forward_GroupedQueryAttention()
+    check_state_dict_of_multi_attn()
+
 
 if __name__ == '__main__':
     test_all()
