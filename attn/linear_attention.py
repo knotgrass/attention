@@ -42,6 +42,13 @@ class LinearSelfAttention(Attention):
 
 
 class Projection(nn.Module):
+    r"""
+    General projections: One can also choose different kinds of
+    low-dimensional projection methods instead of a simple linear projection.
+    For example, one can choose mean/max pooling, or convolution
+    where the kernel and stride is set to n/k.
+    The convolutional functions contain parameters that require training.
+    """
     def __init__(self, n:int, k:int) -> None:
         super().__init__()
         self.k = k
@@ -105,9 +112,8 @@ class MultiheadLinearAttention(nn.Module):
         self.n_head = n_head
         self.embed_dim = embed_dim
         self.dim_K = torch.tensor(embed_dim)
-        self.proj = nn.Parameter(torch.empty(embed_dim * n_head, embed_dim))
-        nn.init.xavier_uniform_(self.proj)
-
+        self.proj = nn.Linear(in_features=embed_dim * n_head,
+                              out_features=embed_dim, bias=False)
         if sharing == 'not-share':
             self.proj_E = None
             self.proj_F = None
@@ -153,5 +159,5 @@ class MultiheadLinearAttention(nn.Module):
 
     def forward(self, x: Tensor) -> Tensor:
         Z_s = torch.cat([head(x) for head in self.multihead], dim=1)
-        Z = torch.matmul(Z_s, self.proj)
+        Z = self.proj(Z_s)
         return Z
