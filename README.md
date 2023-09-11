@@ -9,6 +9,11 @@ This repository implements several types of attention modules in PyTorch, includ
   <img src="images/grouped-query-attention.png" />
 </p>
 
+* Linformer: which reduces the overall self-attention complexity from O(n<sup>2</sup>) to O(n) in both time and space.
+
+<p align="center">
+  <img src="images/linformer.png" style="width: 45%; height: 45%"/>
+</p>
 `multi-query attention` and `grouped-query attention` modules is an alternative to `multi-head attention` with much lower memory bandwidth requirements. They has been used in many models, the most famous of which are:
 * multi-query attention: [PaLM](https://arxiv.org/abs/2204.02311v5), [AlphaDev](https://www.nature.com/articles/s41586-023-06004-9), [AlphaZero](https://arxiv.org/pdf/1712.01815v1.pdf)
 * grouped-query attention: [llama2](https://ai.meta.com/blog/llama-2/)
@@ -25,5 +30,4 @@ For more information, please see the following papers:
 * Fast Transformer Decoding: One Write-Head is All
 You Need [(Noam Shazeer, 2019)](https://arxiv.org/pdf/1911.02150.pdf)
 * GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints [(Ainslie et al., 2023)](https://arxiv.org/pdf/2305.13245.pdf)
-
-I hope this helps!
+* Linformer: Self-Attention with Linear Complexity [(Wang et al., 2020)](https://arxiv.org/abs/2006.04768)
