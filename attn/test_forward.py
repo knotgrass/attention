@@ -1,4 +1,6 @@
 import torch
+import torch.backends.cuda
+import torch.nn.functional as F
 
 from os.path import join, realpath
 from sys import path
@@ -27,8 +29,10 @@ def test_forward_Attention():
     key = attention.key(input_tensor)
     value = attention.value(input_tensor)
 
-    out2 = torch.nn.functional.scaled_dot_product_attention(
-        query, key, value)
+    with torch.backends.cuda.sdp_kernel(enable_flash= False,
+                                        enable_math= True,
+                                        enable_mem_efficient = False):
+        out2 = F.scaled_dot_product_attention(query, key, value)
 
     sub = out2 - output
     print(sub)
