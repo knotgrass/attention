@@ -5,11 +5,12 @@ import torch.nn.functional as F
 
 # https://chat.openai.com/share/585d3602-3dfb-422f-8fac-99e0416cf994
 # https://pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html
+# https://pytorch.org/tutorials/intermediate/scaled_dot_product_attention_tutorial.html
 batch_size = 1
+nheads = 1
 seq_len = 3
-num_head = 1
 head_size = 64
-size = (batch_size, seq_len, num_head, head_size)
+size = (batch_size, nheads, seq_len, head_size)
 
 # Flash attention             supports                  float16
 # Memory Efficient attention supports        float32 and float16
