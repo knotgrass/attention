@@ -1,6 +1,7 @@
 import torch
-from torch import nn, Tensor
 import torch.nn.functional as F
+from torch import nn, Tensor, BoolTensor
+from typing import Optional
 
 
 class Attention(nn.Module):
@@ -12,7 +13,8 @@ class Attention(nn.Module):
         self.key  = nn.Linear(in_features=word_size, out_features=embed_dim, bias=True)
         self.value = nn.Linear(in_features=word_size, out_features=embed_dim, bias=True)
 
-    def self_attention(self, Q: Tensor, K: Tensor, V: Tensor) -> Tensor:
+    def self_attention(self, Q: Tensor, K: Tensor, V: Tensor,
+                       mask:Optional[BoolTensor]=None) -> Tensor:
         """
         Perform self-attention on the input tensors.
 
@@ -21,21 +23,26 @@ class Attention(nn.Module):
 
         * `F.scaled_dot_product_attention`
         * [Flash Attention](https://github.com/Dao-AILab/flash-attention)
+        * [Memory-efficient attention](https://facebookresearch.github.io/xformers/components/ops.html)
 
         Args:
-            Q: The query tensor.
-            K: The key tensor.
-            V: The value tensor.
-
+            Q (torch.Tensor): The query tensor.
+            K (torch.Tensor): The key tensor.
+            V (torch.Tensor): The value tensor.
+            mask (Optional[torch.BoolTensor]): A mask tensor used to hide specific positions in the input sequence.
+                It should have the same shape as Q, K, and must be a Boolean tensor with 0s indicating positions to be masked.
+                Use `None` for no masking. Default is `None`.
         Returns:
             The output tensor of the self-attention layer.
         """
 
         K_T = torch.transpose(K, 0, 1)
-        score = torch.matmul(Q, K_T)
-        score /= torch.sqrt(self.dim_K)
-        score = torch.softmax(score, dim=-1)
-        Z = torch.matmul(score, V)
+        score = torch.matmul(Q, K_T)                # Matmul
+        score /= torch.sqrt(self.dim_K)             # Scale
+        if mask is not None:                        # Mask (opt.)
+            score = torch.masked_fill(score, mask==0, -torch.inf)
+        score = torch.softmax(score, dim=-1)        # SoftMax
+        Z = torch.matmul(score, V)                  # Matmul
         return Z
 
     def forward(self, x:Tensor) -> Tensor:
