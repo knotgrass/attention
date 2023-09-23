@@ -79,10 +79,11 @@ class LinearAttention(Attention):
         k = self.key(x)
         v = self.value(x)
 
+        # https://tinyurl.com/xformers
         # Handle a smaller dimension than expected
         padding = 0
-        if q.shape[1] < self.n:
-            padding = self.n - q.shape[1]
+        if q.shape[0] < self.n:
+            padding = self.n - q.shape[0]
             pad_dims = (0, 0, 0, padding)
             q = F.pad(q, pad_dims)
             k = F.pad(k, pad_dims)
@@ -93,7 +94,7 @@ class LinearAttention(Attention):
 
         z = self.self_attention(q, k_projected, v_projected)
         # z = F.scaled_dot_product_attention(q, k_projected, v_projected)
-        return z[:, :-padding, :] if padding > 0 else z
+        return z[:-padding, :] if padding > 0 else z
 
 
 class MultiheadLinearAttention(nn.Module):
