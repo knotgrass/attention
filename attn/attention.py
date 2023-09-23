@@ -45,11 +45,11 @@ class Attention(nn.Module):
         Z = torch.matmul(score, V)                  # Matmul
         return Z
 
-    def forward(self, x:Tensor) -> Tensor:
+    def forward(self, x:Tensor, mask:Optional[BoolTensor]=None) -> Tensor:
         Q = self.query(x)
         K = self.key(x)
         V = self.value(x)
-        Z = self.self_attention(Q, K, V)
+        Z = self.self_attention(Q, K, V, mask=mask)
         # Z = F.scaled_dot_product_attention(Q, K, V)
         return Z
 
@@ -69,8 +69,8 @@ class MultiheadAttention(nn.Module):
             Attention(word_size, embed_dim) for _ in range(n_head)
         ])
 
-    def forward(self, x: Tensor) -> Tensor:
-        Z_s = torch.cat([head(x) for head in self.multihead], dim=1)
+    def forward(self, x: Tensor, mask:Optional[BoolTensor]=None) -> Tensor:
+        Z_s = torch.cat([head(x, mask) for head in self.multihead], dim=1)
         Z = self.proj(Z_s)
         return Z
 
@@ -92,11 +92,11 @@ class  MultiQueryAttention(Attention):
         self.key = nn.Linear(in_features=word_size, out_features=embed_dim, bias=True)
         self.value = nn.Linear(in_features=word_size, out_features=embed_dim, bias=True)
 
-    def forward(self, x: Tensor) -> Tensor:
+    def forward(self, x: Tensor, mask:Optional[BoolTensor]=None) -> Tensor:
         K = self.key(x)
         V = self.value(x)
         Z_s = torch.cat([
-            self.self_attention(query(x), K, V) for query in self.querys
+            self.self_attention(query(x), K, V, mask) for query in self.querys
         ], dim=1)
         Z = self.proj(Z_s)
         return Z
@@ -120,7 +120,7 @@ class  GroupedQueryAttention(Attention):
         self.proj = nn.Linear(in_features=embed_dim * n_grouped,
                               out_features=embed_dim, bias=False)
 
-    def forward(self, x: Tensor) -> Tensor:
-        Z_s = torch.cat([head(x) for head in self.grouped], dim=1)
+    def forward(self, x: Tensor, mask:Optional[BoolTensor]=None) -> Tensor:
+        Z_s = torch.cat([head(x, mask) for head in self.grouped], dim=1)
         Z = self.proj(Z_s)
         return Z
