@@ -126,8 +126,8 @@ class MultiheadLinearAttention(nn.Module):
 
         elif sharing == 'headwise':
             r"""
-            Headwise sharing: for each layer, we share two projection matrices E and F such that
-            Ei = E and Fi = F across all heads i.
+            Headwise sharing: for each layer, we share two projection matrices E and F
+            such that Ei = E and Fi = F across all heads i.
             """
             self.proj_E = proj_E
             self.proj_F = proj_F
@@ -137,9 +137,9 @@ class MultiheadLinearAttention(nn.Module):
 
         elif sharing == 'key-value':
             r"""
-            Key-value sharing: we do headwise sharing, with the additional constraint of sharing the
-            key and value projections. For each layer, we create a single projection matrix E such that
-            Ei = Fi = E for each key-value projection matrix across all head i.
+            Key-value sharing: we do headwise sharing, with the additional constraint of sharing
+            the key and value projections. For each layer, we create a single projection matrix E
+            such that Ei = Fi = E for each key-value projection matrix across all head i.
             """
             self.proj_E = proj_E
             self.proj_F = None
@@ -149,8 +149,8 @@ class MultiheadLinearAttention(nn.Module):
 
         elif sharing == 'layerwise':
             r"""
-            Layerwise sharing: we use a single projection matrix E across all layers, for all heads, and
-            for both key and value.
+            Layerwise sharing: we use a single projection matrix E across all layers,
+            for all heads, and for both key and value.
             """
             self.proj_E = proj_E
             self.proj_F = None
