@@ -85,9 +85,9 @@ class LinearAttention(Attention):
         if q.shape[0] < self.n:
             padding = self.n - q.shape[0]
             pad_dims = (0, 0, 0, padding)
-            q = F.pad(q, pad_dims)
-            k = F.pad(k, pad_dims)
-            v = F.pad(v, pad_dims)
+            q = F.pad(q, pad_dims, mode='constant', value=0. )
+            k = F.pad(k, pad_dims, mode='constant', value=0. )
+            v = F.pad(v, pad_dims, mode='constant', value=0. )
 
         k_projected = self.proj_E(k.transpose(-2, -1)).transpose(-2, -1)
         v_projected = self.proj_F(v.transpose(-2, -1)).transpose(-2, -1)
