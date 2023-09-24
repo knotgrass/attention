@@ -1,6 +1,6 @@
 import torch
 import torch.nn.functional as F
-from torch import nn, Tensor
+from torch import nn, Tensor, BoolTensor
 from typing import Optional
 from .attention import Attention
 
@@ -74,7 +74,7 @@ class LinearAttention(Attention):
         self.proj_E = proj_E
         self.proj_F = proj_F
 
-    def forward(self, x:Tensor) -> Tensor:
+    def forward(self, x:Tensor, mask:Optional[BoolTensor]=None) -> Tensor:
         q = self.query(x)
         k = self.key(x)
         v = self.value(x)
@@ -92,7 +92,7 @@ class LinearAttention(Attention):
         k_projected = self.proj_E(k.transpose(-2, -1)).transpose(-2, -1)
         v_projected = self.proj_F(v.transpose(-2, -1)).transpose(-2, -1)
 
-        z = self.self_attention(q, k_projected, v_projected)
+        z = self.self_attention(q, k_projected, v_projected, mask)
         # z = F.scaled_dot_product_attention(q, k_projected, v_projected)
         return z[:-padding, :] if padding > 0 else z
 
@@ -158,7 +158,7 @@ class MultiheadLinearAttention(nn.Module):
                 LinearAttention(word_size, embed_dim, proj_E, proj_E) for _ in range(n_head)
             ])
 
-    def forward(self, x: Tensor) -> Tensor:
-        Z_s = torch.cat([head(x) for head in self.multihead], dim=1)
+    def forward(self, x: Tensor, mask:Optional[BoolTensor]=None) -> Tensor:
+        Z_s = torch.cat([head(x, mask) for head in self.multihead], dim=1)
         Z = self.proj(Z_s)
         return Z
