@@ -17,7 +17,7 @@ This repository implements several types of attention modules in PyTorch, includ
 
 `multi-query attention` and `grouped-query attention` modules is an alternative to `multi-head attention` with much lower memory bandwidth requirements. They has been used in many models, the most famous of which are:
 
-* multi-query attention: [PaLM](https://arxiv.org/abs/2204.02311v5), [AlphaDev](https://www.nature.com/articles/s41586-023-06004-9), [AlphaZero](https://arxiv.org/pdf/1712.01815v1.pdf), [Google ](https://deepmind.google/technologies/gemini/#introduction)[Gemini](https://deepmind.google/technologies/gemini/#capabilities)
+* multi-query attention: [PaLM](https://arxiv.org/abs/2204.02311v5), [AlphaDev](https://www.nature.com/articles/s41586-023-06004-9), [AlphaZero](https://arxiv.org/pdf/1712.01815v1.pdf), [Google ](https://deepmind.google/technologies/gemini/#introduction)[Gemini](https://storage.googleapis.com/deepmind-media/gemini/gemini_1_report.pdf)
 * grouped-query attention: [llama2](https://ai.meta.com/blog/llama-2/)
 
 I implemented it in a simple way, with the purpose of understanding how attention works. It is an unoptimized version.
