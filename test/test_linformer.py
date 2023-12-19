@@ -5,8 +5,8 @@ import torch.nn.functional as F
 from os.path import join, realpath
 from sys import path
 path.append(realpath(join(__file__, '..', '..')))
-from attn.linear_attention import (LinearSelfAttention, Projection,
-                                   Linformer, MultiheadLinformer)
+from attn.linformer import (LinearSelfAttention, Projection,
+                            Linformer, MultiheadLinformer)
 del join, realpath
 
 
