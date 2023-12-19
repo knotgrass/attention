@@ -59,7 +59,7 @@ class Projection(nn.Module):
         return self.proj(x)
 
 
-class LinearAttention(Attention):
+class Linformer(Attention):
     r"""
     https://arxiv.org/abs/2006.04768
     """
@@ -97,7 +97,7 @@ class LinearAttention(Attention):
         return z[:-padding, :] if padding > 0 else z
 
 
-class MultiheadLinearAttention(nn.Module):
+class MultiheadLinformer(nn.Module):
     def __init__(self, word_size: int = 512, embed_dim: int = 64, n_head:int=12,
                  proj_E:Projection=..., proj_F:Projection=...,
                  sharing:str='not-share') -> None:
@@ -119,7 +119,7 @@ class MultiheadLinearAttention(nn.Module):
             self.proj_E = None
             self.proj_F = None
             self.multihead = nn.ModuleList([
-                LinearAttention(word_size, embed_dim,
+                Linformer(word_size, embed_dim,
                                 Projection(self.n, self.k),
                                 Projection(self.n, self.k)) for _ in range(n_head)
             ])
@@ -132,7 +132,7 @@ class MultiheadLinearAttention(nn.Module):
             self.proj_E = proj_E
             self.proj_F = proj_F
             self.multihead = nn.ModuleList([
-                LinearAttention(word_size, embed_dim, proj_E, proj_F) for _ in range(n_head)
+                Linformer(word_size, embed_dim, proj_E, proj_F) for _ in range(n_head)
             ])
 
         elif sharing == 'key-value':
@@ -144,7 +144,7 @@ class MultiheadLinearAttention(nn.Module):
             self.proj_E = proj_E
             self.proj_F = None
             self.multihead = nn.ModuleList([
-                LinearAttention(word_size, embed_dim, proj_E, proj_E) for _ in range(n_head)
+                Linformer(word_size, embed_dim, proj_E, proj_E) for _ in range(n_head)
             ])
 
         elif sharing == 'layerwise':
@@ -155,7 +155,7 @@ class MultiheadLinearAttention(nn.Module):
             self.proj_E = proj_E
             self.proj_F = None
             self.multihead = nn.ModuleList([
-                LinearAttention(word_size, embed_dim, proj_E, proj_E) for _ in range(n_head)
+                Linformer(word_size, embed_dim, proj_E, proj_E) for _ in range(n_head)
             ])
 
     def forward(self, x: Tensor, mask:Optional[BoolTensor]=None) -> Tensor:
