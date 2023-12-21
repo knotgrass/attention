@@ -23,9 +23,9 @@ This repository implements several types of attention modules in PyTorch, includ
 I implemented it in a simple way, with the purpose of understanding how attention works. It is an unoptimized version.
 If you are looking for `attention` with better performance, I suggest:
 * [flash attention](https://github.com/Dao-AILab/flash-attention)
-* [torch.nn.functional.scaled_dot_product_attention](https://github.com/pytorch/pytorch/blob/main/torch/nn/functional.py#L4903)
+* [torch.nn.functional.scaled_dot_product_attention](https://github.com/pytorch/pytorch/blob/8fd1963ae208765e4e7a16734b1735d33db854c7/torch/nn/functional.py#L4962=-L5071)
 * [huggingface](https://github.com/huggingface/transformers)
-
+* [xformers](https://github.com/facebookresearch/xformers/tree/042abc8aa47d1f5bcc2e82df041811de218924ba/xformers/components/attention)
 
 For more information, please see the following papers:
 * Attention is All You Need [(Vaswani et al., 2017)](https://arxiv.org/abs/1706.03762)
