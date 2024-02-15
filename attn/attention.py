@@ -35,8 +35,8 @@ class Attention(nn.Module):
         Returns:
             The output tensor of the self-attention layer.
         """
-
-        K_T = torch.transpose(K, 0, 1)
+        # expected [b, seq, embed_dim]
+        K_T = torch.transpose(K, -1, -2)
         score = torch.matmul(Q, K_T)                # Matmul
         score /= torch.sqrt(self.dim_K)             # Scale
         if mask is not None:                        # Mask (opt.)
