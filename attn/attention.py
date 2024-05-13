@@ -7,8 +7,8 @@ from typing import Optional
 class Attention(nn.Module):
     def __init__(self, word_size:int=512, embed_dim:int=64) -> None:
         super().__init__()
-        self.register_buffer('embed_dim', torch.tensor(embed_dim))
-        self.register_buffer('dim_K', torch.tensor(embed_dim))
+        self.embed_dim = embed_dim
+        self.dim_K = torch.tensor(embed_dim, requires_grad=False)
         self.query = nn.Linear(in_features=word_size, out_features=embed_dim, bias=True)
         self.key  = nn.Linear(in_features=word_size, out_features=embed_dim, bias=True)
         self.value = nn.Linear(in_features=word_size, out_features=embed_dim, bias=True)
