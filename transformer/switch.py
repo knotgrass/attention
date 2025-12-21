@@ -145,6 +145,7 @@ class SwitchTransformer(nn.Module):
         self.switch_ffn = SwitchFFN(d_model, d_ff, num_experts)
 
         # Pre-norm LayerNorms
+        # https://x.com/viplismism/status/2000517100071420358?s=20
         self.attn_ln = nn.LayerNorm(d_model)
         self.ffn_ln = nn.LayerNorm(d_model)
 
