@@ -144,7 +144,7 @@ class SwitchTransformer(nn.Module):
         self.attn = MultiheadAttention(d_model, head_dim, num_heads)
         self.switch_ffn = SwitchFFN(d_model, d_ff, num_experts)
 
-        # Pre-norm LayerNorms
+        # Pre-norm LayerNorms https://arxiv.org/abs/2002.04745
         # https://x.com/viplismism/status/2000517100071420358?s=20
         self.attn_ln = nn.LayerNorm(d_model)
         self.ffn_ln = nn.LayerNorm(d_model)
